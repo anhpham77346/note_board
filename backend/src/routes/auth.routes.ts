@@ -1,4 +1,5 @@
 import express from 'express';
+import * as authController from '../controllers/auth.controller';
 
 const router = express.Router();
 
@@ -43,7 +44,7 @@ const router = express.Router();
  *               properties:
  *                 token:
  *                   type: string
- *                   description: JWT token
+ *                   description: JWT token (vô thời hạn)
  *                 user:
  *                   type: object
  *                   properties:
@@ -58,17 +59,7 @@ const router = express.Router();
  *       404:
  *         description: User not found
  */
-router.post('/login', (req, res) => {
-  // Implementation will be added
-  res.status(200).json({ 
-    token: 'sample-jwt-token',
-    user: {
-      id: 1,
-      email: req.body.email,
-      name: 'John Doe'
-    }
-  });
-});
+router.post('/login', (req, res) => authController.login(req, res));
 
 /**
  * @swagger
@@ -85,7 +76,6 @@ router.post('/login', (req, res) => {
  *             required:
  *               - email
  *               - password
- *               - name
  *             properties:
  *               email:
  *                 type: string
@@ -97,7 +87,7 @@ router.post('/login', (req, res) => {
  *                 description: User password
  *               name:
  *                 type: string
- *                 description: User name
+ *                 description: User name (optional)
  *     responses:
  *       201:
  *         description: Registration successful
@@ -108,7 +98,7 @@ router.post('/login', (req, res) => {
  *               properties:
  *                 token:
  *                   type: string
- *                   description: JWT token
+ *                   description: JWT token (vô thời hạn)
  *                 user:
  *                   type: object
  *                   properties:
@@ -123,16 +113,6 @@ router.post('/login', (req, res) => {
  *       409:
  *         description: Email already exists
  */
-router.post('/register', (req, res) => {
-  // Implementation will be added
-  res.status(201).json({ 
-    token: 'sample-jwt-token',
-    user: {
-      id: 1,
-      email: req.body.email,
-      name: req.body.name
-    }
-  });
-});
+router.post('/register', (req, res) => authController.register(req, res));
 
 export default router; 

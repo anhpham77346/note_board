@@ -10,6 +10,9 @@ import boardRoutes from './routes/board.routes';
 import noteRoutes from './routes/note.routes';
 import authRoutes from './routes/auth.routes';
 
+// Import middlewares
+import { authenticate } from './middlewares/auth.middleware';
+
 // Load environment variables
 dotenv.config();
 
@@ -24,10 +27,7 @@ app.use(express.urlencoded({ extended: true }));
 // API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
 
-// Routes
-app.use('/api/users', userRoutes);
-app.use('/api/boards', boardRoutes);
-app.use('/api/notes', noteRoutes);
+// Public routes (không cần xác thực)
 app.use('/api/auth', authRoutes);
 
 // Root route for simple status check
@@ -35,8 +35,17 @@ app.get('/', (req, res) => {
   res.send('Note Board API is running');
 });
 
-// Board notes routes
-app.use('/api/boards', noteRoutes);
+// Protected routes (cần xác thực)
+app.use('/api/users', authenticate, userRoutes);
+app.use('/api/boards', authenticate, boardRoutes);
+app.use('/api/notes', authenticate, noteRoutes);
+app.use('/api/boards', authenticate, noteRoutes); // Board notes routes
+
+// Error handling middleware
+app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {
+  console.error(err.stack);
+  res.status(500).json({ message: 'Đã xảy ra lỗi server' });
+});
 
 // Start server
 app.listen(port, () => {

@@ -6,6 +6,9 @@ COPY package*.json ./
 
 RUN npm install
 
+# Rebuild bcrypt for the container architecture
+RUN npm rebuild bcrypt --build-from-source
+
 COPY . .
 
 # Sinh client Prisma
