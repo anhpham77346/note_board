@@ -10,18 +10,31 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-// Define your models below
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  name      String?
+  password  String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  boards    Board[]
+}
+
 model Board {
   id        Int      @id @default(autoincrement())
   name      String
   createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
   notes     Note[]
+  user      User     @relation(fields: [userId], references: [id])
+  userId    Int
 }
 
 model Note {
   id        Int      @id @default(autoincrement())
   content   String   @db.Text
   createdAt DateTime @default(now())
-  board     Board    @relation(fields: [boardId], references: [id])
+  updatedAt DateTime @updatedAt
+  board     Board    @relation(fields: [boardId], references: [id], onDelete: Cascade)
   boardId   Int
 } 
