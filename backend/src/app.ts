@@ -8,6 +8,7 @@ import { specs } from './config/swagger';
 import userRoutes from './routes/user.routes';
 import boardRoutes from './routes/board.routes';
 import noteRoutes from './routes/note.routes';
+import boardNotesRoutes from './routes/board-notes.routes';
 import authRoutes from './routes/auth.routes';
 
 // Import middlewares
@@ -39,7 +40,9 @@ app.get('/', (req, res) => {
 app.use('/api/users', authenticate, userRoutes);
 app.use('/api/boards', authenticate, boardRoutes);
 app.use('/api/notes', authenticate, noteRoutes);
-app.use('/api/boards', authenticate, noteRoutes); // Board notes routes
+
+// Board notes routes (routes for notes that are part of a board)
+app.use('/api/boards', authenticate, boardNotesRoutes);
 
 // Error handling middleware
 app.use((err: Error, req: express.Request, res: express.Response, next: express.NextFunction) => {

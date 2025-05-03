@@ -1,8 +1,8 @@
 #!/bin/sh
 
 echo "Waiting for MySQL to start..."
-# Đợi MySQL khởi động
-sleep 10
+# Wait for MySQL to be ready - simple timeout approach
+sleep 15
 
 # Rebuild bcrypt to ensure compatibility with the current environment
 echo "Rebuilding bcrypt..."
