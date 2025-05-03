@@ -5,7 +5,6 @@ import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
 
 // Import routes
-import userRoutes from './routes/user.routes';
 import boardRoutes from './routes/board.routes';
 import noteRoutes from './routes/note.routes';
 import boardNotesRoutes from './routes/board-notes.routes';
@@ -37,7 +36,6 @@ app.get('/', (req, res) => {
 });
 
 // Protected routes (cần xác thực)
-app.use('/api/users', authenticate, userRoutes);
 app.use('/api/boards', authenticate, boardRoutes);
 app.use('/api/notes', authenticate, noteRoutes);
 
