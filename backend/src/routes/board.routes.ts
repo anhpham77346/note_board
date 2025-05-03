@@ -1,6 +1,8 @@
 import express from 'express';
+import { BoardController } from '../controllers/board.controller';
 
 const router = express.Router();
+const boardController = new BoardController();
 
 /**
  * @swagger
@@ -37,10 +39,7 @@ const router = express.Router();
  *       401:
  *         description: Unauthorized
  */
-router.post('/', (req, res) => {
-  // Implementation will be added
-  res.status(201).json({ id: 1, name: req.body.name });
-});
+router.post('/', (req, res) => boardController.createBoard(req, res));
 
 /**
  * @swagger
@@ -70,10 +69,7 @@ router.post('/', (req, res) => {
  *       401:
  *         description: Unauthorized
  */
-router.get('/', (req, res) => {
-  // Implementation will be added
-  res.status(200).json([]);
-});
+router.get('/', (req, res) => boardController.getAllBoards(req, res));
 
 /**
  * @swagger
@@ -98,10 +94,46 @@ router.get('/', (req, res) => {
  *       404:
  *         description: Board not found
  */
-router.get('/:id', (req, res) => {
-  // Implementation will be added
-  res.status(200).json({ id: req.params.id, name: 'My Board' });
-});
+router.get('/:id', (req, res) => boardController.getBoardById(req, res));
+
+/**
+ * @swagger
+ * /api/boards/{id}:
+ *   put:
+ *     summary: Update a board
+ *     tags: [Boards]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Board ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - name
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 description: New board name
+ *     responses:
+ *       200:
+ *         description: Board updated successfully
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Board not found
+ */
+router.put('/:id', (req, res) => boardController.updateBoard(req, res));
 
 /**
  * @swagger
@@ -126,9 +158,6 @@ router.get('/:id', (req, res) => {
  *       404:
  *         description: Board not found
  */
-router.delete('/:id', (req, res) => {
-  // Implementation will be added
-  res.status(200).json({ message: 'Board deleted successfully' });
-});
+router.delete('/:id', (req, res) => boardController.deleteBoard(req, res));
 
 export default router; 
