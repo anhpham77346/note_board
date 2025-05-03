@@ -11,10 +11,17 @@ datasource db {
 }
 
 // Define your models below
+model Board {
+  id        Int      @id @default(autoincrement())
+  name      String
+  createdAt DateTime @default(now())
+  notes     Note[]
+}
+
 model Note {
   id        Int      @id @default(autoincrement())
-  title     String
   content   String   @db.Text
   createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  board     Board    @relation(fields: [boardId], references: [id])
+  boardId   Int
 } 
