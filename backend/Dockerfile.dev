@@ -9,14 +9,16 @@ RUN npm install
 # Rebuild bcrypt for the container architecture
 RUN npm rebuild bcrypt --build-from-source
 
+# Copy scripts first and make them executable
+COPY ./scripts ./scripts/
+RUN chmod +x ./scripts/start-dev.sh
+
+# Copy rest of the application
 COPY . .
 
 # Sinh client Prisma
 RUN npx prisma generate
 
-# Make script executable
-RUN chmod +x ./scripts/start-dev.sh
-
 EXPOSE 3000
 
-CMD ["./scripts/start-dev.sh"] 
+CMD ["sh", "./scripts/start-dev.sh"]
