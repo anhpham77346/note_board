@@ -12,13 +12,17 @@ services:
     environment:
       - NODE_ENV=development
       - NEXT_PUBLIC_API_URL=http://localhost:3000
+      - WATCHPACK_POLLING=true
+      - CHOKIDAR_USEPOLLING=true
     volumes:
       - ./frontend:/app
       - /app/node_modules
+      - /app/.next
     depends_on:
       - backend
     networks:
       - note-board-network
+    command: npm run dev -- -p 3001 --hostname 0.0.0.0
 
   backend:
     build: 
