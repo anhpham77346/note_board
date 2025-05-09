@@ -22,10 +22,21 @@ export function RegisterForm() {
       return;
     }
 
+    // Validate password length
+    if (password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
+
     try {
       await register(name, email, password);
     } catch (err: any) {
-      setError(err.message || 'An error occurred during registration');
+      // Handle specific API error codes
+      if (err.message?.includes('Email already exists') || err.message?.includes('409')) {
+        setError('This email is already registered. Please use a different email or log in.');
+      } else {
+        setError(err.message || 'An error occurred during registration');
+      }
     }
   };
 
@@ -78,6 +89,7 @@ export function RegisterForm() {
             required
             minLength={8}
           />
+          <p className="text-xs text-gray-500 mt-1">Must be at least 8 characters</p>
         </div>
         
         <div className="mb-6">
