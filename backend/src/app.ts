@@ -3,6 +3,8 @@ import { PrismaClient } from '@prisma/client';
 import dotenv from 'dotenv';
 import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
+import fs from 'fs';
+import path from 'path';
 
 // Import routes
 import boardRoutes from './routes/board.routes';
@@ -26,6 +28,44 @@ app.use(express.urlencoded({ extended: true }));
 
 // API Documentation
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(specs, { explorer: true }));
+
+// Endpoint to get OpenAPI JSON
+app.get('/swagger.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  res.send(specs);
+});
+
+// Endpoint to save API documentation as JSON file
+app.get('/save-api-docs', (req, res) => {
+  try {
+    // Create directory if it doesn't exist
+    const docsDir = path.join(__dirname, '..', 'docs');
+    if (!fs.existsSync(docsDir)) {
+      fs.mkdirSync(docsDir, { recursive: true });
+    }
+    
+    // Save to file with timestamp
+    const timestamp = new Date().toISOString().replace(/:/g, '-');
+    const fileName = `api-docs-${timestamp}.json`;
+    const filePath = path.join(docsDir, fileName);
+    
+    fs.writeFileSync(filePath, JSON.stringify(specs, null, 2));
+    
+    res.json({ 
+      success: true,
+      message: 'API documentation saved successfully',
+      filePath: filePath,
+      fileName: fileName
+    });
+  } catch (error) {
+    console.error('Error saving API documentation:', error);
+    res.status(500).json({ 
+      success: false,
+      message: 'Failed to save API documentation',
+      error: error instanceof Error ? error.message : String(error)
+    });
+  }
+});
 
 // Public routes (không cần xác thực)
 app.use('/api/auth', authRoutes);
@@ -52,4 +92,6 @@ app.use((err: Error, req: express.Request, res: express.Response, next: express.
 app.listen(port, () => {
   console.log(`Server is running at http://localhost:${port}`);
   console.log(`Swagger documentation available at http://localhost:${port}/api-docs`);
+  console.log(`OpenAPI JSON available at http://localhost:${port}/swagger.json`);
+  console.log(`Save API documentation at http://localhost:${port}/save-api-docs`);
 });
