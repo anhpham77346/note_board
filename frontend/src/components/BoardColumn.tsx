@@ -75,7 +75,7 @@ export function BoardColumn({
 
   return (
     <>
-      <div className="bg-white p-4 rounded-xl shadow-md min-w-[320px] max-w-[320px] h-full flex flex-col border border-gray-200 hover:shadow-lg transition-shadow">
+      <div className="bg-white p-4 rounded-xl shadow-md min-w-[320px] max-w-[320px] h-[calc(100vh-150px)] flex flex-col border border-gray-200 hover:shadow-lg transition-shadow">
         <div className="pb-3 mb-3 border-b border-gray-100">
           {isEditing ? (
             <div className="flex flex-col w-full">

@@ -410,26 +410,25 @@ export function NoteBoard() {
   }
 
   return (
-    <div className="p-4 md:p-6">
-      <div className="mb-8">
-        <h1 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">Your Boards</h1>
-        <p className="text-gray-600">Organize your notes with drag and drop functionality</p>
-      </div>
-      
-      <div className="mb-8 bg-white p-5 rounded-xl shadow-sm border border-gray-100">
-        <h2 className="text-lg font-medium text-gray-700 mb-3">Create New Board</h2>
-        <div className="flex flex-col sm:flex-row gap-2">
+    <div className="h-[calc(100vh-64px)] flex flex-col p-4 md:p-6">
+      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+        <div>
+          <h1 className="text-2xl md:text-3xl font-bold text-gray-800">Your Boards</h1>
+          <p className="text-gray-600">Organize your notes with drag and drop functionality</p>
+        </div>
+        
+        <div className="bg-white p-3 rounded-xl shadow-sm border border-gray-100 flex items-center gap-2 w-full sm:w-auto min-w-[300px]">
           <input
             type="text"
             value={newBoardTitle}
             onChange={(e) => setNewBoardTitle(e.target.value)}
-            placeholder="Enter board title..."
+            placeholder="New board title..."
             className="flex-grow p-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500 transition-all"
             onKeyDown={(e) => e.key === 'Enter' && handleAddBoard()}
           />
           <button
             onClick={handleAddBoard}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center shadow-sm"
+            className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 transition-colors flex items-center justify-center shadow-sm whitespace-nowrap"
           >
             <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5 mr-1" viewBox="0 0 20 20" fill="currentColor">
               <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
@@ -440,14 +439,16 @@ export function NoteBoard() {
       </div>
 
       {boards.length === 0 ? (
-        <div className="text-center p-12 bg-gray-50 rounded-xl border border-gray-200">
-          <div className="mx-auto w-16 h-16 mb-4 text-gray-400">
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
-            </svg>
+        <div className="flex-grow flex items-center justify-center">
+          <div className="text-center p-12 bg-gray-50 rounded-xl border border-gray-200 max-w-lg mx-auto">
+            <div className="mx-auto w-16 h-16 mb-4 text-gray-400">
+              <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
+              </svg>
+            </div>
+            <h3 className="text-lg font-medium text-gray-800 mb-2">No boards yet</h3>
+            <p className="text-gray-600 mb-4">Create your first board to get started!</p>
           </div>
-          <h3 className="text-lg font-medium text-gray-800 mb-2">No boards yet</h3>
-          <p className="text-gray-600 mb-4">Create your first board to get started!</p>
         </div>
       ) : (
         <DndContext
@@ -456,18 +457,20 @@ export function NoteBoard() {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex gap-6 overflow-x-auto pb-8 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
-            {boards.map(board => (
-              <BoardColumn
-                key={board.id}
-                board={board}
-                onAddNote={handleAddNote}
-                onDeleteNote={handleDeleteNote}
-                onUpdateBoard={handleUpdateBoard}
-                onDeleteBoard={handleDeleteBoard}
-                onUpdateNote={handleUpdateNote}
-              />
-            ))}
+          <div className="flex-grow h-full overflow-x-auto">
+            <div className="flex gap-6 pb-4 h-full pt-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+              {boards.map(board => (
+                <BoardColumn
+                  key={board.id}
+                  board={board}
+                  onAddNote={handleAddNote}
+                  onDeleteNote={handleDeleteNote}
+                  onUpdateBoard={handleUpdateBoard}
+                  onDeleteBoard={handleDeleteBoard}
+                  onUpdateNote={handleUpdateNote}
+                />
+              ))}
+            </div>
           </div>
 
           <DragOverlay>
