@@ -5,6 +5,7 @@ import swaggerUi from 'swagger-ui-express';
 import { specs } from './config/swagger';
 import fs from 'fs';
 import path from 'path';
+import cors from 'cors';
 
 // Import routes
 import boardRoutes from './routes/board.routes';
@@ -21,6 +22,14 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT || 3000;
 const prisma = new PrismaClient();
+
+// CORS configuration
+app.use(cors({
+  origin: ['http://localhost:3001'], // Frontend origin
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true
+}));
 
 // Middleware
 app.use(express.json());
