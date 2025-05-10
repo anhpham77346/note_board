@@ -8,8 +8,8 @@ import { NoteItem } from './NoteItem';
 
 interface BoardColumnProps {
   board: Board;
-  onAddNote: (boardId: string, content: string) => void;
-  onDeleteNote: (noteId: string) => void;
+  onAddNote: (boardId: string | number, content: string) => void;
+  onDeleteNote: (noteId: string | number) => void;
 }
 
 export function BoardColumn({ board, onAddNote, onDeleteNote }: BoardColumnProps) {
@@ -28,7 +28,7 @@ export function BoardColumn({ board, onAddNote, onDeleteNote }: BoardColumnProps
 
   return (
     <div className="bg-gray-100 p-4 rounded-md shadow min-w-[300px] max-w-[300px] h-full">
-      <h2 className="text-lg font-bold mb-4 text-gray-700">{board.title}</h2>
+      <h2 className="text-lg font-bold mb-4 text-gray-700">{board.title || board.name}</h2>
       
       <div className="mb-4">
         <input
@@ -49,9 +49,13 @@ export function BoardColumn({ board, onAddNote, onDeleteNote }: BoardColumnProps
       
       <div ref={setNodeRef} className="min-h-[200px]">
         <SortableContext items={board.notes.map(note => note.id)} strategy={verticalListSortingStrategy}>
-          {board.notes.map((note) => (
-            <NoteItem key={note.id} note={note} onDelete={onDeleteNote} />
-          ))}
+          {board.notes.length === 0 ? (
+            <div className="text-gray-400 text-center mt-4">No notes yet</div>
+          ) : (
+            board.notes.map((note) => (
+              <NoteItem key={note.id} note={note} onDelete={onDeleteNote} />
+            ))
+          )}
         </SortableContext>
       </div>
     </div>

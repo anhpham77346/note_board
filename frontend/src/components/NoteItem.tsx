@@ -6,7 +6,7 @@ import { Note } from '../types';
 
 interface NoteItemProps {
   note: Note;
-  onDelete: (id: string) => void;
+  onDelete: (id: string | number) => void;
 }
 
 export function NoteItem({ note, onDelete }: NoteItemProps) {
@@ -31,7 +31,10 @@ export function NoteItem({ note, onDelete }: NoteItemProps) {
       <div className="flex justify-between items-start">
         <p className="text-gray-800">{note.content}</p>
         <button 
-          onClick={() => onDelete(note.id)}
+          onClick={(e) => {
+            e.stopPropagation();
+            onDelete(note.id);
+          }}
           className="text-red-500 hover:text-red-700 ml-2 text-sm"
         >
           ×

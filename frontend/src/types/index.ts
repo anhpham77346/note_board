@@ -1,11 +1,14 @@
 export interface Note {
-  id: string;
+  id: string | number;
   content: string;
-  boardId: string;
+  boardId: string | number;
+  createdAt?: string;
 }
 
 export interface Board {
-  id: string;
+  id: string | number;
   title: string;
+  name?: string; // Để tương thích với backend API
   notes: Note[];
+  createdAt?: string;
 } 
