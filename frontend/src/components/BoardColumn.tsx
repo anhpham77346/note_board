@@ -78,31 +78,33 @@ export function BoardColumn({
       <div className="bg-white p-4 rounded-xl shadow-md min-w-[320px] max-w-[320px] h-full flex flex-col border border-gray-200 hover:shadow-lg transition-shadow">
         <div className="pb-3 mb-3 border-b border-gray-100">
           {isEditing ? (
-            <div className="flex items-center w-full">
+            <div className="flex flex-col w-full">
               <input
                 ref={editInputRef}
                 type="text"
                 value={boardName}
                 onChange={(e) => setBoardName(e.target.value)}
-                className="flex-grow p-2 border border-gray-300 rounded-lg mr-2 text-lg font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                className="w-full p-2 border border-gray-300 rounded-lg mb-2 text-lg font-medium text-gray-700 focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') handleSaveBoard();
                   if (e.key === 'Escape') handleCancelEdit();
                 }}
               />
-              <button
-                onClick={handleCancelEdit}
-                className="bg-gray-200 text-gray-700 px-2 py-1.5 text-sm rounded-lg hover:bg-gray-300 mr-1 transition-colors"
-                title="Cancel"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveBoard}
-                className="bg-blue-600 text-white px-2 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Save
-              </button>
+              <div className="flex space-x-2">
+                <button
+                  onClick={handleCancelEdit}
+                  className="flex-1 bg-gray-200 text-gray-700 px-2 py-1.5 text-sm rounded-lg hover:bg-gray-300 transition-colors"
+                  title="Cancel"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSaveBoard}
+                  className="flex-1 bg-blue-600 text-white px-2 py-1.5 text-sm rounded-lg hover:bg-blue-700 transition-colors"
+                >
+                  Save
+                </button>
+              </div>
             </div>
           ) : (
             <>
