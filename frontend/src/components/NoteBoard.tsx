@@ -458,7 +458,7 @@ export function NoteBoard() {
           onDragEnd={handleDragEnd}
         >
           <div className="flex-grow h-full overflow-x-auto">
-            <div className="flex gap-6 pb-4 h-full pt-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+            <div className="flex gap-8 pb-4 h-full pt-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
               {boards.map(board => (
                 <BoardColumn
                   key={board.id}

@@ -2,7 +2,7 @@
 
 import { useState, useRef, useEffect } from 'react';
 import { useDroppable } from '@dnd-kit/core';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { SortableContext, rectSortingStrategy } from '@dnd-kit/sortable';
 import { Board, Note } from '../types';
 import { NoteItem } from './NoteItem';
 import { Modal } from './ui/Modal';
@@ -75,7 +75,7 @@ export function BoardColumn({
 
   return (
     <>
-      <div className="bg-white p-4 rounded-xl shadow-md min-w-[320px] max-w-[320px] h-[calc(100vh-150px)] flex flex-col border border-gray-200 hover:shadow-lg transition-shadow">
+      <div className="bg-white p-4 rounded-xl shadow-md min-w-[480px] max-w-[480px] h-[calc(100vh-100px)] flex flex-col border border-gray-200 hover:shadow-lg transition-shadow">
         <div className="pb-3 mb-3 border-b border-gray-100">
           {isEditing ? (
             <div className="flex flex-col w-full">
@@ -109,7 +109,7 @@ export function BoardColumn({
           ) : (
             <>
               <div className="flex justify-between items-center">
-                <h2 className="text-lg font-semibold text-gray-800 truncate">{board.title || board.name}</h2>
+                <h2 className="text-xl font-semibold text-gray-800 truncate">{board.title || board.name}</h2>
                 <div className="flex space-x-1">
                   <button
                     onClick={handleEditBoard}
@@ -138,7 +138,7 @@ export function BoardColumn({
           )}
         </div>
         
-        <div className="mb-3">
+        <div className="mb-4">
           <textarea
             value={newNoteContent}
             onChange={(e) => setNewNoteContent(e.target.value)}
@@ -157,9 +157,9 @@ export function BoardColumn({
           </button>
         </div>
         
-        <div className="flex-grow overflow-y-auto pr-1 space-y-3 scrollbar-thin">
+        <div className="flex-grow overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           <div ref={setNodeRef} className="min-h-[100px]">
-            <SortableContext items={board.notes.map(note => note.id)} strategy={verticalListSortingStrategy}>
+            <SortableContext items={board.notes.map(note => note.id)} strategy={rectSortingStrategy}>
               {board.notes.length === 0 ? (
                 <div className="text-gray-400 text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -168,9 +168,11 @@ export function BoardColumn({
                   <p className="text-sm">No notes yet</p>
                 </div>
               ) : (
-                board.notes.map((note) => (
-                  <NoteItem key={note.id} note={note} onDelete={onDeleteNote} onUpdate={onUpdateNote} />
-                ))
+                <div className="grid grid-cols-2 gap-4 pb-4">
+                  {board.notes.map((note) => (
+                    <NoteItem key={note.id} note={note} onDelete={onDeleteNote} onUpdate={onUpdateNote} />
+                  ))}
+                </div>
               )}
             </SortableContext>
           </div>
