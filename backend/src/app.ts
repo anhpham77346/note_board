@@ -81,7 +81,7 @@ app.use('/api/auth', authRoutes);
 
 // Root route for simple status check
 app.get('/', (req, res) => {
-  res.send('Note Board API is running');
+  res.send('Note Board API is running - Auto-reload is working!');
 });
 
 // Protected routes (cần xác thực)

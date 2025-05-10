@@ -4,21 +4,23 @@ WORKDIR /app
 
 COPY package*.json ./
 
-RUN npm install
+# Install dependencies with specific handling for bcrypt
+RUN npm install --no-optional
 
-# Rebuild bcrypt for the container architecture
-RUN npm rebuild bcrypt --build-from-source
+# Install dos2unix for fixing line endings
+RUN apt-get update && apt-get install -y dos2unix
 
 # Copy scripts first and make them executable
 COPY ./scripts ./scripts/
-RUN chmod +x ./scripts/start-dev.sh
+RUN chmod +x ./scripts/*.sh
+RUN find /app/scripts -type f -name "*.sh" -exec dos2unix {} \;
 
 # Copy rest of the application
 COPY . .
 
-# Sinh client Prisma
+# Generate Prisma client
 RUN npx prisma generate
 
 EXPOSE 3000
 
-CMD ["sh", "./scripts/start-dev.sh"]
+CMD ["bash", "./scripts/docker-entrypoint.sh"]

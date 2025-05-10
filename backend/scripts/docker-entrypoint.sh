@@ -1,23 +1,26 @@
-#!/bin/sh
+#!/bin/bash
 
+echo "Starting Docker entrypoint script..."
+
+# Fix line endings for all shell scripts
+find /app/scripts -type f -name "*.sh" -exec dos2unix {} \;
+echo "Line endings fixed for shell scripts"
+
+# Wait for MySQL to start
 echo "Waiting for MySQL to start..."
-# Wait for MySQL to be ready - simple timeout approach
 sleep 15
 
-# Clean node_modules/bcrypt and reinstall it
+# Clean and reinstall bcrypt
 echo "Fixing bcrypt issue..."
 rm -rf /app/node_modules/bcrypt
 npm install --save bcrypt
-
-# Rebuild bcrypt to ensure compatibility with the current environment
-echo "Rebuilding bcrypt..."
 npm rebuild bcrypt --build-from-source
 
-# Tạo lại Prisma client để đảm bảo tương thích với môi trường
+# Generate Prisma client
 echo "Generating Prisma client..."
 npx prisma generate
 
-# Chạy prisma migrate để cập nhật schema
+# Run database migrations
 echo "Running database migrations..."
 npx prisma migrate dev --name init --skip-generate
 
@@ -26,6 +29,6 @@ export CHOKIDAR_USEPOLLING=true
 export WATCHPACK_POLLING=true
 export NODEMON_LEGACY_WATCH=true
 
-# Khởi động ứng dụng
+# Start the application
 echo "Starting application with hot reloading..."
 npm run dev 

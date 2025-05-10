@@ -1,6 +1,9 @@
 {
   "watch": ["src"],
-  "ext": "ts",
-  "ignore": ["src/**/*.spec.ts"],
-  "exec": "ts-node ./src/app.ts"
+  "ext": "ts,js,json",
+  "ignore": ["node_modules"],
+  "exec": "ts-node src/app.ts",
+  "legacyWatch": true,
+  "delay": "1000",
+  "poll": true
 } 
