@@ -312,6 +312,58 @@ export function NoteBoard() {
     }
   };
 
+  // Thêm chức năng cập nhật board
+  const handleUpdateBoard = async (boardId: string | number, name: string) => {
+    if (!name.trim()) return;
+
+    try {
+      // Cập nhật UI trước (optimistic update)
+      setBoards(boards => {
+        return boards.map(board => {
+          if (board.id === boardId) {
+            return {
+              ...board,
+              title: name,
+              name: name
+            };
+          }
+          return board;
+        });
+      });
+
+      // Gọi API
+      await boardsApi.update(Number(boardId), name);
+      toast.success('Board updated successfully');
+    } catch (error) {
+      console.error('Failed to update board:', error);
+      toast.error('Failed to update board. Please try again.');
+      
+      // Nếu có lỗi, tải lại dữ liệu
+      fetchBoardsAndNotes();
+    }
+  };
+
+  // Thêm chức năng xóa board
+  const handleDeleteBoard = async (boardId: string | number) => {
+    try {
+      // Lưu dữ liệu board để khôi phục nếu cần
+      const boardToDelete = boards.find(board => board.id === boardId);
+      
+      // Cập nhật UI trước (optimistic update)
+      setBoards(boards => boards.filter(board => board.id !== boardId));
+
+      // Gọi API
+      await boardsApi.delete(Number(boardId));
+      toast.success('Board deleted successfully');
+    } catch (error) {
+      console.error('Failed to delete board:', error);
+      toast.error('Failed to delete board. Please try again.');
+      
+      // Nếu có lỗi, tải lại dữ liệu
+      fetchBoardsAndNotes();
+    }
+  };
+
   if (loading) {
     return (
       <div className="p-6 flex justify-center items-center h-64">
@@ -361,6 +413,8 @@ export function NoteBoard() {
                 board={board}
                 onAddNote={handleAddNote}
                 onDeleteNote={handleDeleteNote}
+                onUpdateBoard={handleUpdateBoard}
+                onDeleteBoard={handleDeleteBoard}
               />
             ))}
           </div>
