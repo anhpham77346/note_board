@@ -100,4 +100,43 @@ router.put('/:id', (req, res) => noteController.updateNote(req, res));
  */
 router.delete('/:id', (req, res) => noteController.deleteNote(req, res));
 
+/**
+ * @swagger
+ * /api/notes/{id}/move:
+ *   put:
+ *     summary: Move a note to another board
+ *     tags: [Notes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: integer
+ *         required: true
+ *         description: Note ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - boardId
+ *             properties:
+ *               boardId:
+ *                 type: integer
+ *                 description: ID of the target board
+ *     responses:
+ *       200:
+ *         description: Note moved successfully
+ *       400:
+ *         description: Bad request
+ *       401:
+ *         description: Unauthorized
+ *       404:
+ *         description: Note or board not found
+ */
+router.put('/:id/move', (req, res) => noteController.moveNote(req, res));
+
 export default router; 

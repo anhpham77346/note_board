@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import { NoteService, CreateNoteInput, UpdateNoteInput } from '../services/note.service';
+import { NoteService, CreateNoteInput, UpdateNoteInput, MoveNoteInput } from '../services/note.service';
 
 const noteService = new NoteService();
 
@@ -167,6 +167,51 @@ export class NoteController {
     } catch (error) {
       console.error('Error deleting note:', error);
       res.status(500).json({ message: 'Failed to delete note' });
+    }
+  }
+
+  /**
+   * Move a note to another board
+   */
+  async moveNote(req: Request, res: Response): Promise<void> {
+    try {
+      const noteId = parseInt(req.params.id);
+      const userId = (req as any).user.id;
+      const { boardId } = req.body;
+
+      if (isNaN(noteId)) {
+        res.status(400).json({ message: 'Invalid note ID' });
+        return;
+      }
+
+      if (boardId === undefined || isNaN(boardId)) {
+        res.status(400).json({ message: 'Board ID is required and must be a number' });
+        return;
+      }
+
+      // Check if the user has access to the note
+      const hasAccess = await noteService.isUserNoteOwner(noteId, userId);
+      if (!hasAccess) {
+        res.status(404).json({ message: 'Note not found or access denied' });
+        return;
+      }
+
+      // Check if the user has access to the target board
+      const hasAccessToTargetBoard = await noteService.isUserBoardOwner(boardId, userId);
+      if (!hasAccessToTargetBoard) {
+        res.status(404).json({ message: 'Target board not found or access denied' });
+        return;
+      }
+
+      const noteData: MoveNoteInput = {
+        boardId
+      };
+
+      const movedNote = await noteService.moveNote(noteId, noteData);
+      res.status(200).json(movedNote);
+    } catch (error) {
+      console.error('Error moving note:', error);
+      res.status(500).json({ message: 'Failed to move note' });
     }
   }
 } 

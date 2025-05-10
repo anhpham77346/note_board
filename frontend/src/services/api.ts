@@ -91,6 +91,12 @@ export const notesApi = {
     return response.data;
   },
 
+  // Di chuyển note sang board khác
+  moveNote: async (id: number, targetBoardId: number): Promise<ApiNote> => {
+    const response = await api.put(`/api/notes/${id}/move`, { boardId: targetBoardId });
+    return response.data;
+  },
+
   // Xóa note
   delete: async (id: number): Promise<void> => {
     await api.delete(`/api/notes/${id}`);

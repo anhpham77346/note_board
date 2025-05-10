@@ -108,6 +108,7 @@ export function NoteBoard() {
       // If the note is already in this board, do nothing
       if (activeNote.boardId === targetBoardId) return;
       
+      // Update UI optimistically
       setBoards(boards => {
         // Remove from source board
         const updatedBoards = boards.map(board => {
@@ -120,7 +121,7 @@ export function NoteBoard() {
           return board;
         });
         
-        // Add to target board
+        // Add to target board with updated boardId
         return updatedBoards.map(board => {
           if (board.id === targetBoardId) {
             return {
@@ -132,10 +133,10 @@ export function NoteBoard() {
         });
       });
 
-      // Update note in backend
-      notesApi.update(Number(activeNote.id), activeNote.content)
+      // Use the new moveNote API
+      notesApi.moveNote(Number(activeNote.id), Number(targetBoardId))
         .catch(error => {
-          console.error('Failed to update note:', error);
+          console.error('Failed to move note:', error);
           toast.error('Failed to move note. Please try again.');
           // Revert optimistic update
           fetchBoardsAndNotes();

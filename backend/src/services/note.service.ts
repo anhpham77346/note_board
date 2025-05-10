@@ -9,6 +9,11 @@ export interface CreateNoteInput {
 
 export interface UpdateNoteInput {
   content: string;
+  boardId?: number;
+}
+
+export interface MoveNoteInput {
+  boardId: number;
 }
 
 export class NoteService {
@@ -92,7 +97,22 @@ export class NoteService {
         id
       },
       data: {
-        content: data.content
+        content: data.content,
+        ...(data.boardId !== undefined && { boardId: data.boardId })
+      }
+    });
+  }
+
+  /**
+   * Move a note to another board
+   */
+  async moveNote(id: number, data: MoveNoteInput): Promise<Note | null> {
+    return prisma.note.update({
+      where: {
+        id
+      },
+      data: {
+        boardId: data.boardId
       }
     });
   }
