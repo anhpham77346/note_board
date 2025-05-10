@@ -439,7 +439,7 @@ export function NoteBoard() {
       </div>
 
       {boards.length === 0 ? (
-        <div className="flex-grow flex items-center justify-center">
+        <div className="flex items-center justify-center flex-grow">
           <div className="text-center p-12 bg-gray-50 rounded-xl border border-gray-200 max-w-lg mx-auto">
             <div className="mx-auto w-16 h-16 mb-4 text-gray-400">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -457,8 +457,8 @@ export function NoteBoard() {
           onDragOver={handleDragOver}
           onDragEnd={handleDragEnd}
         >
-          <div className="flex-grow h-full overflow-x-auto">
-            <div className="flex gap-8 pb-4 h-full pt-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
+          <div className="flex-grow pb-4">
+            <div className="flex flex-wrap gap-8 pt-2 overflow-auto">
               {boards.map(board => (
                 <BoardColumn
                   key={board.id}
