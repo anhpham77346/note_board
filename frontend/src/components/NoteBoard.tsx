@@ -277,6 +277,43 @@ export function NoteBoard() {
     }
   };
 
+  // Handle note update
+  const handleUpdateNote = async (noteId: string | number, content: string) => {
+    try {
+      // Find the note and its board
+      let targetNote: Note | null = null;
+      let targetBoardId: string | number | null = null;
+
+      // Optimistic update
+      setBoards(boards => {
+        return boards.map(board => {
+          const noteToUpdate = board.notes.find(note => note.id === noteId);
+          if (noteToUpdate) {
+            targetNote = noteToUpdate;
+            targetBoardId = board.id;
+            return {
+              ...board,
+              notes: board.notes.map(note => 
+                note.id === noteId ? { ...note, content } : note
+              )
+            };
+          }
+          return board;
+        });
+      });
+
+      // Call API
+      await notesApi.update(Number(noteId), content);
+      toast.success('Note updated successfully');
+    } catch (error) {
+      console.error('Failed to update note:', error);
+      toast.error('Failed to update note. Please try again.');
+      
+      // Refresh data on error
+      fetchBoardsAndNotes();
+    }
+  };
+
   const handleAddBoard = async () => {
     if (!newBoardTitle.trim()) return;
 
@@ -415,6 +452,7 @@ export function NoteBoard() {
                 onDeleteNote={handleDeleteNote}
                 onUpdateBoard={handleUpdateBoard}
                 onDeleteBoard={handleDeleteBoard}
+                onUpdateNote={handleUpdateNote}
               />
             ))}
           </div>
