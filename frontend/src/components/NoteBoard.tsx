@@ -71,6 +71,13 @@ export function NoteBoard() {
         try {
           const apiNotes = await notesApi.getByBoardId(Number(board.id));
           board.notes = apiNotes.map(mapApiToNote);
+          
+          // Sort notes by creation time (newest first)
+          board.notes.sort((a, b) => {
+            const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+            const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+            return dateB - dateA; // Descending order (newest first)
+          });
         } catch (error) {
           console.error(`Failed to load notes for board ${board.id}:`, error);
         }
@@ -206,7 +213,7 @@ export function NoteBoard() {
           if (board.id === boardId) {
             return {
               ...board,
-              notes: [...board.notes, newNote]
+              notes: [newNote, ...board.notes]
             };
           }
           return board;
@@ -223,8 +230,8 @@ export function NoteBoard() {
             return {
               ...board,
               notes: [
-                ...board.notes.filter(note => note.id !== tempId),
-                mapApiToNote(createdNote)
+                mapApiToNote(createdNote),
+                ...board.notes.filter(note => note.id !== tempId)
               ]
             };
           }

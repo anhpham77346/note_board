@@ -77,6 +77,11 @@ export function NoteItem({ note, onDelete, onUpdate, isNewNote }: NoteItemProps)
     } else if (e.key === 'Escape') {
       setContent(note.content); // Revert changes
       setIsEditing(false);
+      
+      // If this is a new note, delete it when Escape is pressed
+      if (isNewNote && note.isTemporary) {
+        onDelete(note.id);
+      }
     }
   };
 
@@ -173,6 +178,10 @@ export function NoteItem({ note, onDelete, onUpdate, isNewNote }: NoteItemProps)
                 onClick={() => {
                   setContent(note.content);
                   setIsEditing(false);
+                  // If this is a new note, delete it when canceling
+                  if (isNewNote && note.isTemporary) {
+                    onDelete(note.id);
+                  }
                 }}
                 className="px-3 py-1 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 text-sm transition-colors"
               >
