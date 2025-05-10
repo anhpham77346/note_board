@@ -59,6 +59,13 @@ export function NoteBoard() {
       // Khởi tạo boards với mảng notes rỗng
       let mappedBoards = apiBoards.map(mapApiToBoard);
       
+      // Sắp xếp boards theo thời gian tạo (cũ lên trước)
+      mappedBoards.sort((a, b) => {
+        const dateA = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+        const dateB = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+        return dateA - dateB;
+      });
+      
       // Cho mỗi board, fetch notes
       for (const board of mappedBoards) {
         try {
@@ -324,7 +331,8 @@ export function NoteBoard() {
         id: tempId,
         title: newBoardTitle,
         name: newBoardTitle,
-        notes: []
+        notes: [],
+        createdAt: new Date().toISOString()
       };
 
       setBoards([...boards, newBoard]);
