@@ -3,6 +3,7 @@ export interface Note {
   content: string;
   boardId: string | number;
   createdAt?: string;
+  isTemporary?: boolean;
 }
 
 export interface Board {

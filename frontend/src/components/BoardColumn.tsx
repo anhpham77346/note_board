@@ -24,11 +24,11 @@ export function BoardColumn({
   onDeleteBoard,
   onUpdateNote 
 }: BoardColumnProps) {
-  const [newNoteContent, setNewNoteContent] = useState('');
   const [isEditing, setIsEditing] = useState(false);
   const [boardName, setBoardName] = useState(board.title || board.name || '');
   const [originalBoardName, setOriginalBoardName] = useState('');
   const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [temporaryNote, setTemporaryNote] = useState<Note | null>(null);
   const editInputRef = useRef<HTMLInputElement>(null);
 
   const { setNodeRef } = useDroppable({
@@ -43,11 +43,29 @@ export function BoardColumn({
     }
   }, [isEditing]);
 
+  // Add a new temporary note to the board
   const handleAddNote = () => {
-    if (newNoteContent.trim()) {
-      onAddNote(board.id, newNoteContent);
-      setNewNoteContent('');
+    // Create a temporary note
+    const tempNote: Note = {
+      id: `temp-${Date.now()}`,
+      content: '',
+      boardId: board.id,
+      isTemporary: true
+    };
+    setTemporaryNote(tempNote);
+  };
+
+  // Save the temporary note to the server
+  const handleSaveTemporaryNote = (noteId: string | number, content: string) => {
+    if (content.trim()) {
+      onAddNote(board.id, content);
     }
+    setTemporaryNote(null);
+  };
+
+  // Cancel and remove the temporary note
+  const handleCancelTemporaryNote = () => {
+    setTemporaryNote(null);
   };
 
   const handleEditBoard = () => {
@@ -112,6 +130,15 @@ export function BoardColumn({
                 <h2 className="text-xl font-semibold text-gray-800 truncate">{board.title || board.name}</h2>
                 <div className="flex space-x-1">
                   <button
+                    onClick={handleAddNote}
+                    className="p-1.5 text-gray-500 hover:text-green-600 hover:bg-green-50 rounded-lg transition-colors"
+                    title="Add new note"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
+                    </svg>
+                  </button>
+                  <button
                     onClick={handleEditBoard}
                     className="p-1.5 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
                     title="Edit board"
@@ -138,29 +165,10 @@ export function BoardColumn({
           )}
         </div>
         
-        <div className="mb-4">
-          <textarea
-            value={newNoteContent}
-            onChange={(e) => setNewNoteContent(e.target.value)}
-            placeholder="Add a new note..."
-            className="w-full p-2 border border-gray-300 rounded-lg mb-2 resize-none min-h-[80px] focus:ring-2 focus:ring-blue-500 focus:border-blue-500 text-gray-700"
-            onKeyDown={(e) => e.key === 'Enter' && !e.shiftKey && handleAddNote()}
-          />
-          <button
-            onClick={handleAddNote}
-            className="bg-blue-600 text-white px-3 py-2 rounded-lg hover:bg-blue-700 w-full flex items-center justify-center transition-colors"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4 mr-1" viewBox="0 0 20 20" fill="currentColor">
-              <path fillRule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clipRule="evenodd" />
-            </svg>
-            Add Note
-          </button>
-        </div>
-        
         <div className="flex-grow overflow-y-auto pr-1 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
           <div ref={setNodeRef} className="min-h-[100px]">
             <SortableContext items={board.notes.map(note => note.id)} strategy={rectSortingStrategy}>
-              {board.notes.length === 0 ? (
+              {board.notes.length === 0 && !temporaryNote ? (
                 <div className="text-gray-400 text-center py-8 bg-gray-50 rounded-lg border border-dashed border-gray-200">
                   <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8 mx-auto mb-2 text-gray-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -169,6 +177,15 @@ export function BoardColumn({
                 </div>
               ) : (
                 <div className="grid grid-cols-2 gap-4 pb-4">
+                  {temporaryNote && (
+                    <NoteItem 
+                      key={temporaryNote.id} 
+                      note={temporaryNote} 
+                      onDelete={handleCancelTemporaryNote} 
+                      onUpdate={handleSaveTemporaryNote}
+                      isNewNote={true}
+                    />
+                  )}
                   {board.notes.map((note) => (
                     <NoteItem key={note.id} note={note} onDelete={onDeleteNote} onUpdate={onUpdateNote} />
                   ))}

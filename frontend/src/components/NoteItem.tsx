@@ -10,10 +10,11 @@ interface NoteItemProps {
   note: Note;
   onDelete: (id: string | number) => void;
   onUpdate?: (id: string | number, content: string) => void;
+  isNewNote?: boolean;
 }
 
-export function NoteItem({ note, onDelete, onUpdate }: NoteItemProps) {
-  const [isEditing, setIsEditing] = useState(false);
+export function NoteItem({ note, onDelete, onUpdate, isNewNote }: NoteItemProps) {
+  const [isEditing, setIsEditing] = useState(isNewNote || false);
   const [content, setContent] = useState(note.content);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const editInputRef = useRef<HTMLTextAreaElement>(null);
